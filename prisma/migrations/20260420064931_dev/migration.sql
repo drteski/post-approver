@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "notes" SET DEFAULT ARRAY[]::TEXT[];
