@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/db';
 
-export async function GET(request: NextResponse) {
+export async function GET(request: NextRequest) {
 
 	const authHeader = request.headers.get('authorization');
 	if (!authHeader || authHeader !== 'Bearer ' + process.env.NEXT_PUBLIC_SECRET) {
