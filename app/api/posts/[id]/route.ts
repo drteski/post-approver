@@ -26,20 +26,37 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 		return new Response('Brak autoryzacji', { status: 401 });
 	}
 
-	const formData = await request.formData();
-	const file = formData.get('file') as File;
-	const postJson = formData.get('post') as string;
-	const { title, lead, text, alias, img, notes, approved } = JSON.parse(postJson);
+	let postData;
+	let file: File | null = null;
+
+	const contentType = request.headers.get('content-type') || '';
+
+	if (contentType.includes('multipart/form-data')) {
+		const formData = await request.formData();
+		file = formData.get('file') as File | null;
+
+		const postJson = formData.get('post') as string;
+		postData = JSON.parse(postJson);
+	} else {
+		postData = await request.json();
+	}
+
+	const { title, lead, text, alias, img, notes, approved } = postData;
+
 	let newFile = { code: 200, message: 'Plik nie dodany używam starego', img } as FileUploadData;
-	if (file)
+
+	if (file) {
 		newFile = await FileUpload(file) ?? {
 			code: 500,
 			message: 'Nieoczekiwany błąd',
 			img: ''
 		};
+	}
+
 	if (newFile.code === 400 || newFile.code === 500) {
 		return new Response(newFile.message, { status: newFile.code });
 	}
+
 	const post = await prisma.post.update({
 			where: { id: Number(id) },
 			data: {
@@ -53,8 +70,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 			}
 		}
 	);
-	return NextResponse.json({ message: 'Post zaktualizowany', post, code: 200 });
 
+	return NextResponse.json({ message: 'Post zaktualizowany', post, code: 200 });
 }
 
 

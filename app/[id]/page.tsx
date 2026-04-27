@@ -10,6 +10,8 @@ import { ChangeEvent, FormEvent, use, useEffect, useRef, useState } from 'react'
 import axios from 'axios';
 import Image from 'next/image';
 import { H1 } from '@/components/Typography';
+import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Post = {
 	id: number,
@@ -25,6 +27,7 @@ type Post = {
 
 const EditPostPage = ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = use(params);
+	const router = useRouter();
 	const [post, setPost] = useState<Post | null>(null);
 	const [file, setFile] = useState<File | null>(null);
 
@@ -79,7 +82,8 @@ const EditPostPage = ({ params }: { params: Promise<{ id: string }> }) => {
 			title,
 			lead,
 			text,
-			alias
+			alias,
+			approved: null
 		}));
 
 		try {
@@ -94,6 +98,8 @@ const EditPostPage = ({ params }: { params: Promise<{ id: string }> }) => {
 				setMessage(res.data.message);
 				setFile(null);
 				if (fileRef.current) fileRef.current.value = '';
+				router.push('/');
+				router.refresh();
 			} else {
 				setMessage('Błąd: ' + res.data.message);
 			}
@@ -114,65 +120,60 @@ const EditPostPage = ({ params }: { params: Promise<{ id: string }> }) => {
 					<Link href="/">Wróć</Link>
 				</Button>
 			</div>
-			<div className="flex flex-col lg:grid lg:grid-cols-[400px_1fr] gap-4 h-full min-h-0">
+			{post ? (<div className="flex flex-col lg:grid lg:grid-cols-[400px_1fr] gap-4 h-full min-h-0">
 				<div
 					className="border border-neutral-200 rounded-xl p-4 bg-white shadow-sm lg:overflow-hidden h-fit lg:h-full">
-					{post ? (
-						<form onSubmit={handleSave}
-							className="flex flex-col lg:grid lg:grid-cols-1 lg:grid-rows-[auto_1fr_2fr_auto_auto] lg:h-full gap-4">
 
-							<div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
-								<Field>
-									<Label htmlFor="title">Tytuł</Label>
-									<Input value={title} id="title" onChange={(e) => setTitle(e.target.value)} />
-								</Field>
-								<Field>
-									<Label htmlFor="alias">Sklep</Label>
-									<Input value={alias} id="alias" onChange={(e) => setAlias(e.target.value)} />
-								</Field>
-							</div>
+					<form onSubmit={handleSave}
+						className="flex flex-col lg:grid lg:grid-cols-1 lg:grid-rows-[auto_1fr_2fr_auto_auto] lg:h-full gap-4">
 
-							<Field className="flex flex-col lg:h-full min-h-0">
-								<Label htmlFor="lead">Wstęp</Label>
-								<Textarea
-									value={lead}
-									id="lead"
-									onChange={(e) => setLead(e.target.value)}
-									className="flex-1 min-h-[150px] lg:min-h-0 resize-none overflow-y-auto"
-								/>
-							</Field>
-
-							<Field className="flex flex-col lg:h-full min-h-0">
-								<Label htmlFor="text">Treść</Label>
-								<Textarea
-									value={text}
-									id="text"
-									onChange={(e) => setText(e.target.value)}
-									className="flex-1 min-h-[250px] lg:min-h-0 resize-none overflow-y-auto"
-								/>
-							</Field>
-
+						<div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-4">
 							<Field>
-								<Label htmlFor="picture">Zdjęcie</Label>
-								<Input
-									id="picture"
-									type="file"
-									accept="image/*"
-									ref={fileRef}
-									className="cursor-pointer"
-									onChange={handleFileChange}
-								/>
+								<Label htmlFor="title">Tytuł</Label>
+								<Input value={title} id="title" onChange={(e) => setTitle(e.target.value)} />
 							</Field>
-
-							<Button type="submit" disabled={loading} className="w-full mt-2 lg:mt-0">
-								{loading ? 'Wysyłanie...' : message || 'Zapisz zmiany'}
-							</Button>
-						</form>
-					) : (
-						<div className="flex items-center justify-center h-40 lg:h-full text-neutral-400">
-							Ładowanie posta...
+							<Field>
+								<Label htmlFor="alias">Sklep</Label>
+								<Input value={alias} id="alias" onChange={(e) => setAlias(e.target.value)} />
+							</Field>
 						</div>
-					)}
+
+						<Field className="flex flex-col lg:h-full min-h-0">
+							<Label htmlFor="lead">Wstęp</Label>
+							<Textarea
+								value={lead}
+								id="lead"
+								onChange={(e) => setLead(e.target.value)}
+								className="flex-1 min-h-[150px] lg:min-h-0 resize-none overflow-y-auto"
+							/>
+						</Field>
+
+						<Field className="flex flex-col lg:h-full min-h-0">
+							<Label htmlFor="text">Treść</Label>
+							<Textarea
+								value={text}
+								id="text"
+								onChange={(e) => setText(e.target.value)}
+								className="flex-1 min-h-[250px] lg:min-h-0 resize-none overflow-y-auto"
+							/>
+						</Field>
+
+						<Field>
+							<Label htmlFor="picture">Zdjęcie</Label>
+							<Input
+								id="picture"
+								type="file"
+								accept="image/*"
+								ref={fileRef}
+								className="cursor-pointer"
+								onChange={handleFileChange}
+							/>
+						</Field>
+
+						<Button type="submit" disabled={loading} className="w-full mt-2 lg:mt-0 cursor-pointer">
+							{loading ? 'Wysyłanie...' : message || 'Zapisz zmiany'}
+						</Button>
+					</form>
 				</div>
 				<div className="border border-neutral-200 rounded-xl bg-neutral-50 overflow-y-auto lg:h-full">
 					<div className="p-4 md:p-8 max-w-3xl mx-auto flex flex-col gap-6 bg-white min-h-full shadow-sm">
@@ -205,7 +206,10 @@ const EditPostPage = ({ params }: { params: Promise<{ id: string }> }) => {
 						)}
 					</div>
 				</div>
-			</div>
+			</div>) : (
+				<Skeleton
+					className="flex items-center justify-center rounded-xl h-40 lg:h-full">Ładowanie...</Skeleton>)}
+
 		</div>
 	);
 };

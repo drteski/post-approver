@@ -59,6 +59,7 @@ export const DataTable = ({ data }: { data: Person[] }) => {
 								src={row.original.img}
 								fill
 								className="object-cover"
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 							/>
 						</div>
 						<div className="p-5 flex flex-col gap-4">

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Person = {
 	img: string
@@ -17,9 +18,14 @@ type Person = {
 }
 export default function Home() {
 	const [posts, setPosts] = useState<Person[]>([]);
+	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		(async () => {
-			await axios.get<Person[]>('/api/posts', { headers: { authorization: `Bearer ${process.env.NEXT_PUBLIC_SECRET}` } }).then(res => setPosts(res.data));
+			setLoading(true);
+			await axios.get<Person[]>('/api/posts', { headers: { authorization: `Bearer ${process.env.NEXT_PUBLIC_SECRET}` } }).then(res => {
+				setPosts(res.data);
+				setLoading(false);
+			});
 		})();
 	}, []);
 
@@ -29,7 +35,10 @@ export default function Home() {
 				<H1>Posty</H1>
 				<Button asChild><Link href="/new">Dodaj nowy</Link></Button>
 			</div>
-			{posts.length === 0 ? (<div className="flex items-center justify-center h-full">Brak postów</div>) :
+			{loading ? (
+				<Skeleton
+					className="flex items-center justify-center h-full rounded-xl">Ładowanie...</Skeleton>) : posts.length === 0 ? (
+					<div className="flex items-center justify-center h-full">Brak postów</div>) :
 				<DataTable data={posts} />}
 		</div>
 	);

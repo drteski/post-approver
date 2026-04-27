@@ -42,7 +42,7 @@ export const FileUpload = async (file: File) => {
 			return {
 				code: 200,
 				message: 'Plik wysłany na SFTP',
-				img: 'https://files.lazienka-rea.com.pl/posts/' + newFileName
+				img: process.env.NEXT_PUBLIC_IMAGE_URL + newFileName
 			};
 
 		} catch (error) {

@@ -10,6 +10,7 @@ import { Field } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Post = {
 	id: number,
@@ -102,14 +103,14 @@ const PreviewPage = ({ params }: { params: Promise<{ id: string }> }) => {
 						<div className="grid grid-cols-2 gap-3 lg:bottom-0">
 							<Button
 								variant="destructive"
-								className="h-14 lg:h-12 font-bold"
+								className="h-14 lg:h-12 font-bold cursor-pointer"
 								disabled={loading}
 								onClick={() => saveUpdate(false)}
 							>
 								Odrzuć
 							</Button>
 							<Button
-								className="bg-green-700 hover:bg-green-600 h-14 lg:h-12 font-bold"
+								className="bg-green-700 hover:bg-green-600 h-14 lg:h-12 font-bold cursor-pointer"
 								disabled={loading}
 								onClick={() => saveUpdate(true)}
 							>
@@ -147,9 +148,9 @@ const PreviewPage = ({ params }: { params: Promise<{ id: string }> }) => {
 					</div>
 				</div>
 			) : (
-				<div className="flex-1 flex items-center justify-center text-neutral-400">
-					<div className="animate-pulse">Ładowanie podglądu...</div>
-				</div>
+
+				<Skeleton
+					className="flex-1 flex items-center justify-center rounded-xl">Ładowanie...</Skeleton>
 			)}
 		</div>
 	);
