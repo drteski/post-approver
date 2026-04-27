@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { FileUpload } from '@/lib/fileUpload';
 import prisma from '@/lib/db';
 
@@ -8,7 +8,7 @@ type FileUploadData = {
 	img: string
 };
 
-export async function POST(request: NextResponse) {
+export async function POST(request: NextRequest) {
 	const authHeader = request.headers.get('authorization');
 	if (!authHeader || authHeader !== 'Bearer ' + process.env.NEXT_PUBLIC_SECRET) {
 		return new Response('Brak autoryzacji', { status: 401 });
