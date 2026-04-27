@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { FileUpload } from '@/lib/fileUpload';
 
@@ -8,7 +8,7 @@ type FileUploadData = {
 	img: string
 };
 
-export async function GET(request: NextResponse, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	const authHeader = request.headers.get('authorization');
 	if (!authHeader || authHeader !== 'Bearer ' + process.env.NEXT_PUBLIC_SECRET) {
@@ -19,7 +19,7 @@ export async function GET(request: NextResponse, { params }: { params: Promise<{
 }
 
 
-export async function POST(request: NextResponse, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	const authHeader = request.headers.get('authorization');
 	if (!authHeader || authHeader !== 'Bearer ' + process.env.NEXT_PUBLIC_SECRET) {
@@ -58,7 +58,7 @@ export async function POST(request: NextResponse, { params }: { params: Promise<
 }
 
 
-export async function DELETE(request: NextResponse, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	const authHeader = request.headers.get('authorization');
 
