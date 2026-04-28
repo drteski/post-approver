@@ -8,6 +8,7 @@ import { DeleteDialog } from '@/components/DeleteDialog';
 import axios from 'axios';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
+
 export const DataTableActions = ({ id }: { id: number }) => {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -44,10 +45,12 @@ export const DataTableActions = ({ id }: { id: number }) => {
 			</TooltipContent>
 		</Tooltip>
 		<DeleteDialog open={showDeleteDialog} onDialogClose={() => setShowDeleteDialog(false)}
-			onConfirm={async () => await axios.delete(`${process.env.NEXT_PUBLIC_URL}/api/posts/${id}`, { headers: { authorization: `Bearer ${process.env.NEXT_PUBLIC_SECRET}` } }).then(() => {
-				setShowDeleteDialog(false);
-				window.location.reload();
-			})} />
+			onConfirm={async () => {
+				await axios.delete(`/api/posts/${id}`, { headers: { authorization: `Bearer ${process.env.NEXT_PUBLIC_SECRET}` } }).then(() => {
+					setShowDeleteDialog(false);
+					window.location.reload();
+				});
+			}} />
 	</div>);
 };
 

@@ -29,7 +29,6 @@ export function DeleteDialog({ open, onConfirm, onDialogClose }: {
 				<AlertDialogFooter>
 					<AlertDialogCancel onClick={onDialogClose}>Anuluj</AlertDialogCancel>
 					<Button onClick={onConfirm} className="bg-red-600 text-white hover:bg-red-700">Usuń</Button>
-
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>

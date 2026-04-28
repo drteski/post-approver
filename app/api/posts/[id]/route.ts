@@ -83,7 +83,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 		return new Response('Brak autoryzacji', { status: 401 });
 	}
 
-
+	console.log(id);
 	const post = await prisma.post.delete({
 			where: { id: Number(id) }
 		}
